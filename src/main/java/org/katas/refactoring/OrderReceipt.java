@@ -4,7 +4,7 @@ public class OrderReceipt {
     public OrderReceipt(Order o) {
         this.o = o;
     }
-    public void print(StringBuilder output ){
+    public void printOrders(StringBuilder output ){
         output.append("======Printing Orders======\n");
     }
     public void printAttributes(StringBuilder output){
@@ -32,7 +32,7 @@ public class OrderReceipt {
     }
     public String printReceipt() {
         StringBuilder output = new StringBuilder();
-        print(output);
+        printOrders(output);
         printAttributes(output);
         printLineItem(output);
         return output.toString();
