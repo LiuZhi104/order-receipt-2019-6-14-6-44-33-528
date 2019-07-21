@@ -1,47 +1,47 @@
 package org.katas.refactoring;
+
+import java.util.List;
+
 public class OrderReceipt {
     private Order order;
     public static  final  double TAX_RATE=.10;
-    private double totalSaleTax=0d;
-    private  double totalCost=0d;
     public OrderReceipt(Order order) {
         this.order = order;
     }
-    public void print(StringBuilder output ){
-        output.append("======Printing Orders======\n");
+    public String printReceipt() {
+        StringBuilder output = new StringBuilder();
+        List<LineItem> items = order.getLineItems();
+        print(output);
+        printCustomerInformation(output);
+        printItems(items,output);
+        double totalPriceWithoutTax = caculateTotalAmountWithoutTax(items);
+        double salesTax = totalPriceWithoutTax*TAX_RATE;
+        double totalAmount = totalPriceWithoutTax+salesTax;
+
+        output.append("Sales Tax\t").append(salesTax);
+        output.append("Total Amount\t").append(totalAmount);
+        return output.toString();
     }
-    public void printAttributes(StringBuilder output) {
+
+    void print(StringBuilder output){ output.append("======Printing Orders======\n"); }
+
+    void printCustomerInformation(StringBuilder output){
         output.append(order.getCustomerName());
         output.append(order.getCustomerAddress());
     }
-
-    public void printLineItems(StringBuilder output){
-        for (LineItem lineItem:order.getLineItems()) {
-            printOrder(output,lineItem);
-            double salesTax=lineItem.totalAmount()*TAX_RATE;
-            totalSaleTax+=salesTax;
-            totalCost+=lineItem.totalAmount()+salesTax;
-        }
-
+    void printItems(List<LineItem> items,StringBuilder output){
+        items.stream().forEach(lineItem -> output.append(lineItem.getDescription())
+                .append('\t')
+                .append(lineItem.getPrice())
+                .append('\t')
+                .append(lineItem.getQuantity())
+                .append('\t')
+                .append(lineItem.totalAmount())
+                .append('\n'));
     }
-    public void printOrder(StringBuilder output,LineItem lineItem){
-        output.append(lineItem.getDescription());
-        output.append('\t');
-        output.append(lineItem.getPrice());
-        output.append('\t');
-        output.append(lineItem.getQuantity());
-        output.append('\t');
-        output.append(lineItem.totalAmount());
-        output.append('\n');
-    }
-
-    public String printReceipt() {
-        StringBuilder output = new StringBuilder();
-        print(output);
-        printAttributes(output);
-        printLineItems(output);
-        output.append("Sales Tax").append('\t').append(totalSaleTax);
-        output.append("Total Amount").append('\t').append(totalCost);
-        return output.toString();
+    double caculateTotalAmountWithoutTax(List<LineItem> items){
+        double totalCost = 0d;
+        totalCost = items.stream().mapToDouble(LineItem::totalAmount).sum();
+        return totalCost;
     }
 }

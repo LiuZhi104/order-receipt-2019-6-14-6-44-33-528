@@ -17,7 +17,6 @@ public class OrderReceiptTest {
 
         assertThat(output).contains("Mr X", "Chicago, 60601");
     }
-
     @Test
     public void shouldPrintLineItemAndSalesTaxInformation() {
         ArrayList<LineItem> lineItems = new ArrayList<LineItem>() {{
